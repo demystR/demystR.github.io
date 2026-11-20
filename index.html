@@ -40,7 +40,8 @@ ol.books h3 a { color:var(--dm-ink); }
 ol.books p { margin:0; color:var(--dm-ink-soft); }
 ol.books li.coming h3 { color:var(--dm-ink-soft); }
 .tag { display:inline-block; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; padding:1px 8px; border-radius:99px; margin-left:8px; vertical-align:2px; }
-.tag.live { background:var(--dm-blue); color:#fff; }
+.tag.read { background:var(--dm-blue); color:#fff; }
+.tag.progress { background:var(--dm-blue-tint); color:var(--dm-blue-dark); border:1px solid var(--dm-blue); }
 .tag.coming { background:var(--dm-yellow-tint); color:var(--dm-ink); border:1px solid var(--dm-yellow); }
 footer { background:var(--dm-ink); color:#E6EBF0; margin-top:48px; padding:24px 0; font-size:0.92rem; }
 footer a { color:#fff; }
@@ -89,34 +90,35 @@ footer p { margin:0 0 6px; }
 </footer>
 
 <script>
-/* The book list. To publish a book, give it a url. Books without a url show as "coming". */
+/* The book list. status: "read" (finished, live), "progress" (live, still being written), "coming" (not live yet; no url). */
 var BOOKS = [
   { title: "Demystifying Statistics: From the Mean to the General Linear Model",
     blurb: "Functions, equations and pictures, building from the mean and variance through t-tests, ANOVA and correlation to the general linear model. The entry point to the series.",
-    url: "https://demystr.github.io/stats/" },
+    url: "https://demystr.github.io/stats/", status: "progress" },
   { title: "Demystifying Null Hypothesis Testing",
     blurb: "Sampling and null distributions, p-values, error rates and power, all built by simulation.",
-    url: null },
+    url: null, status: "coming" },
   { title: "Demystifying Non-Parametric Tests: Ranks, Permutations and the Bootstrap",
     blurb: "Rank tests taught as permutation tests on ranks, plus permutation tests on raw data and the bootstrap.",
-    url: null },
+    url: null, status: "coming" },
   { title: "Demystifying Generalised and Mixed Models",
     blurb: "Logistic and Poisson regression fitted by hand with maximum likelihood, multiple predictors, assumptions, mixed models, and DAGs for choosing a model.",
-    url: null },
+    url: null, status: "coming" },
   { title: "The Drift Diffusion Model From Scratch",
     blurb: "Perceptual decisions with random-dot motion, then value-based decisions, then hierarchical models.",
-    url: "https://demystr.github.io/ddm/" },
+    url: "https://demystr.github.io/ddm/", status: "progress" },
   { title: "Reinforcement Learning and Choice Models",
     blurb: "Reinforcement-learning and softmax choice models.",
-    url: null }
+    url: null, status: "coming" }
 ];
 var ol = document.getElementById("books");
+var LABELS = { read: "Read", progress: "In-Progress", coming: "Coming" };
 BOOKS.forEach(function (b) {
   var li = document.createElement("li");
   li.className = b.url ? "live" : "coming";
   var name = b.url ? '<a href="' + b.url + '">' + b.title + '</a>' : b.title;
-  li.innerHTML = '<h3>' + name + '<span class="tag ' + li.className + '">' +
-    (b.url ? "Read" : "Coming") + '</span></h3><p>' + b.blurb + '</p>';
+  li.innerHTML = '<h3>' + name + '<span class="tag ' + b.status + '">' +
+    LABELS[b.status] + '</span></h3><p>' + b.blurb + '</p>';
   ol.appendChild(li);
 });
 </script>
