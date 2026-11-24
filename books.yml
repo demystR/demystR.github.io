@@ -2,7 +2,7 @@
 # status: "read" (finished, live), "progress" (live, still being written),
 #         "coming" (not live yet: leave out `path`).
 # section: "fundamentals" or "modelling" (which group on the homepage).
-- title: "Demystifying Statistical Functions"
+- title: "Statistical Functions"
   description: "Functions, equations and pictures, building from the mean and variance through t-tests, ANOVA and correlation to the general linear model. The entry point to the series."
   path: https://demystr.github.io/stats/
   image: images/stats.svg
@@ -10,7 +10,7 @@
   section: fundamentals
   order: 1
 
-- title: "Demystifying Null Hypothesis Testing"
+- title: "Null Hypothesis Testing"
   description: "Sampling and null distributions, p-values, error rates and power, all built by simulation."
   path: https://demystr.github.io/nhst/
   image: images/nhst.svg
@@ -18,14 +18,14 @@
   section: fundamentals
   order: 2
 
-- title: "Demystifying Generalised and Mixed Models"
+- title: "Generalised and Mixed Models"
   description: "Logistic and Poisson regression fitted by hand with maximum likelihood, multiple predictors, assumptions and mixed models."
   image: images/glmm.svg
   status: coming
   section: fundamentals
   order: 3
   
-- title: "Demystifying Non-Parametric Tests: Ranks, Permutations and the Bootstrap"
+- title: "Non-Parametric Tests: Ranks, Permutations and the Bootstrap"
   description: "Rank tests taught as permutation tests on ranks, plus permutation tests on raw data and the bootstrap."
   image: images/nonparametric.svg
   status: coming
@@ -39,7 +39,7 @@
   section: modelling
   order: 1
 
-- title: "Demystifying Drift Diffusion Models"
+- title: "Drift Diffusion Models"
   description: "Perceptual decisions with random-dot motion, then value-based decisions, then hierarchical models."
   # path: https://demystr.github.io/ddm/ (when ready)
   image: images/ddm.svg
