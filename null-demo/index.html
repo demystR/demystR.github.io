@@ -103,8 +103,8 @@ summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weig
     <div class="box">
       <h2>Cards</h2>
       <label class="fld">Null hypothesis: the mean of this deck<input type="text" id="deck0" value="1-9x4 10x16"></label>
-      <label class="fld">Round 1 deck<input type="text" id="deck1" value="1-7x4"></label>
-      <label class="fld">Round 2 deck<input type="text" id="deck2" value="1-9x4 10x16"></label>
+      <label class="fld">Round 1 deck<input type="text" id="deck1" value="1-9x4 10x16"></label>
+      <label class="fld">Round 2 deck<input type="text" id="deck2" value="1-7x4"></label>
       <div class="row">
         <label class="fld">Cards per sample (n)<input type="number" id="nIn" min="2" max="30" value="7"></label>
         <label class="fld">Drawing<select id="repl"><option value="0">Without replacement</option><option value="1">With replacement</option></select></label>
@@ -185,7 +185,7 @@ const isPhoneLink = !!room && P.get('view') !== 'present';
 if (!room) { room = store.get('nd-room') || uid().slice(0, 6); store.set('nd-room', room); }
 const topic = 'demystr-null-' + room;
 const S = { round: 1, rounds: { 1: [], 2: [] }, seen: new Set(), obs: null, tails: 'two', tcurve: false, sim: false, ghost: false, ghosts: [], online: false,
-  cfg: { deck0: '1-9x4 10x16', deck1: '1-7x4', deck2: '1-9x4 10x16', n: 7, repl: false, mu0: 340 / 52 },
+  cfg: { deck0: '1-9x4 10x16', deck1: '1-9x4 10x16', deck2: '1-7x4', n: 7, repl: false, mu0: 340 / 52 },
   cleared: { 1: +(store.get('nd-cleared1-' + room) || 0), 2: +(store.get('nd-cleared2-' + room) || 0) } };
 const df = () => S.cfg.n - 1;
 const deckFor = r => parseDeck(r === 2 ? S.cfg.deck2 : S.cfg.deck1) || parseDeck('1-9x4 10x16');
