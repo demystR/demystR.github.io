@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Null distribution demo</title>
+<title>Null distribution of t</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* VOICE: plain teaching tool, dry labels, one result shown large.
-   IDEA: a dotplot built on a whiteboard, one dot per person in the room.
+   IDEA: a dotplot built on a whiteboard, one dot per t value from the room.
    PICTURE: the live dotplot itself, filling most of the presenter screen.
    COLOUR and TYPE: demystR theme: blue structure, ink text, yellow only to mark extreme dots. Space Grotesk + Inter.
    LAYOUT: presenter = plot left, controls right (stacked under 900px); phone = one calm column. */
@@ -31,12 +31,13 @@ button[aria-pressed=true]{background:var(--blue);color:#fff}
 input[type=text],input[type=number],select{min-height:44px;padding:0 10px;border:1px solid var(--rule);border-radius:8px;background:var(--card);width:100%}
 label.chk{display:flex;gap:10px;align-items:center;min-height:44px;cursor:pointer}
 label.chk input{width:20px;height:20px;accent-color:var(--blue)}
+label.fld{display:flex;flex-direction:column;gap:2px;font-size:13px;color:var(--soft)}
 .top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px max(3vw,16px);border-bottom:1px solid var(--rule)}
 .top>.row{flex-wrap:wrap;justify-content:flex-end}.views{display:flex;gap:6px}.views button{flex:none;min-height:36px;padding:0 12px;font-size:14px}
 .mode{font-size:13px;color:var(--soft)}
 /* presenter */
 .pres{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;padding:16px max(3vw,16px) 24px}
-.fig{position:relative;min-height:340px;height:calc(100vh - 230px)}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.fig{position:relative;min-height:340px;height:calc(100vh - 250px)}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
 .stats{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:10px;font-size:15px;color:var(--soft)}
 .stats b{color:var(--ink);font-family:"Space Grotesk",sans-serif;font-size:clamp(20px,2.2vw,28px);font-weight:700;margin-right:6px;font-variant-numeric:tabular-nums}
 .side{display:flex;flex-direction:column;gap:14px}
@@ -47,23 +48,27 @@ label.chk input{width:20px;height:20px;accent-color:var(--blue)}
 #qr{align-self:center;background:#fff;padding:8px;border-radius:6px}#qr img,#qr canvas{display:block}
 .code{font-family:"JetBrains Mono",monospace;font-size:22px;letter-spacing:.08em;text-align:center}
 .url{font-family:"JetBrains Mono",monospace;font-size:12px;overflow-wrap:anywhere;color:var(--soft)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--soft);margin-top:4px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
 @media(max-width:600px){.mode{display:none}}
 @media(max-width:900px){.pres{grid-template-columns:minmax(0,1fr)}.fig{height:60vh}}
 /* phone */
 .phone{max-width:440px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:16px}
-.grp{border:1px solid var(--rule);border-radius:10px;padding:12px 14px}
-.grp h2{margin-bottom:8px}
-.vals{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
-.vals span{display:grid;place-items:center;height:56px;border-radius:8px;background:var(--tint);font:700 28px "Space Grotesk",sans-serif;font-variant-numeric:tabular-nums}
+.steps{margin:0;padding-left:1.3em}.steps li{margin-bottom:4px}
+.formula{font-family:"JetBrains Mono",monospace;font-size:15px;background:var(--tint);border-radius:8px;padding:10px 12px;text-align:center}
 .msg{border-radius:8px;padding:12px 14px;background:var(--tint)}
 .msg.warn{background:var(--ytint);border:1px solid var(--yellow)}
+details{border:1px solid var(--rule);border-radius:10px;padding:4px 14px}
+summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:600}
+.work{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-variant-numeric:tabular-nums;margin:10px 0}
+.work dt{color:var(--soft)}.work dd{margin:0;text-align:right;font-weight:600}
 .hidden{display:none!important}
 @media(prefers-reduced-motion:no-preference){circle.new{animation:drop .5s ease-out}@keyframes drop{from{opacity:0;transform:translateY(-30px)}}}
 </style>
 </head>
 <body>
 <header class="top">
-  <h1 id="title">Null distribution: live</h1>
+  <h1 id="title">Null distribution of t</h1>
   <div class="row" style="flex:0 1 auto;gap:14px">
     <span class="mode" id="mode">Connecting…</span>
     <div class="views" role="group" aria-label="View">
@@ -75,7 +80,8 @@ label.chk input{width:20px;height:20px;accent-color:var(--blue)}
 
 <main id="presView" class="pres">
   <section>
-    <div class="fig" id="fig"><svg id="svg" role="img" aria-label="Dotplot of submitted differences"></svg></div>
+    <div class="fig" id="fig"><svg id="svg" role="img" aria-label="Dotplot of submitted t values"></svg></div>
+    <div class="legend" id="legend"></div>
     <div class="stats" id="stats"></div>
   </section>
   <aside class="side">
@@ -89,14 +95,24 @@ label.chk input{width:20px;height:20px;accent-color:var(--blue)}
     <div class="box">
       <h2>Round</h2>
       <div class="seg" role="group" aria-label="Round">
-        <button id="r1" aria-pressed="true">1: no effect</button>
-        <button id="r2" aria-pressed="false">2: group A +1</button>
+        <button id="r1" aria-pressed="true">1: null deck</button>
+        <button id="r2" aria-pressed="false">2: loaded deck</button>
       </div>
-      <p class="small" id="roundNote">Both groups come from the same die. The null is true.</p>
+      <p class="small" id="roundNote"></p>
+    </div>
+    <div class="box">
+      <h2>Cards</h2>
+      <label class="fld">Round 1 deck<input type="text" id="deck1" value="1-10x4"></label>
+      <label class="fld">Round 2 deck<input type="text" id="deck2" value="3-10x4"></label>
+      <div class="row">
+        <label class="fld">Cards per sample (n)<input type="number" id="nIn" min="2" max="30" value="5"></label>
+        <label class="fld">Drawing<select id="repl"><option value="0">Without replacement</option><option value="1">With replacement</option></select></label>
+      </div>
+      <p class="small" id="deckNote"></p>
     </div>
     <div class="box">
       <h2>Observed result</h2>
-      <div class="row"><input type="number" id="obs" step="0.1" value="2.2" aria-label="Observed difference"><button id="obsBtn">Show</button></div>
+      <label class="fld">Published t<div class="row"><input type="number" id="obs" step="0.1" value="2.8"><button id="obsBtn" style="flex:0 0 auto">Show</button></div></label>
       <select id="tails" aria-label="Which results count as extreme">
         <option value="two">Count both directions</option>
         <option value="one">Count this direction only</option>
@@ -104,30 +120,35 @@ label.chk input{width:20px;height:20px;accent-color:var(--blue)}
     </div>
     <div class="box">
       <h2>Layers</h2>
-      <label class="chk"><input type="checkbox" id="simChk"> 10,000 simulated differences</label>
+      <label class="chk"><input type="checkbox" id="tChk"> t distribution curve</label>
+      <label class="chk"><input type="checkbox" id="simChk"> 10,000 simulated draws</label>
       <label class="chk"><input type="checkbox" id="ghostChk"> Ghost dots</label>
       <div class="row"><input type="number" id="ghostN" min="0" max="200" value="30" aria-label="Number of ghost dots"><span class="small">ghost dots (not counted)</span></div>
     </div>
     <div class="box">
       <h2>Test and reset</h2>
       <div class="row"><button id="addTest">Add 10 test dots</button><button id="clear">Clear round</button></div>
-      <p class="small">Test dots are drawn from the same population as phone dots and are counted.</p>
+      <p class="small">Test dots are simulated draws from the current deck and are counted.</p>
     </div>
   </aside>
 </main>
 
 <main id="phoneView" class="phone hidden">
   <p class="small" id="phRound">Round 1</p>
-  <div class="grp"><h2>Group A</h2><div class="vals" id="valsA"></div></div>
-  <div class="grp"><h2>Group B</h2><div class="vals" id="valsB"></div></div>
-  <p class="small">Work out the mean of each group, then mean A minus mean B.</p>
+  <ol class="steps" id="phSteps"></ol>
+  <div class="formula" id="phFormula"></div>
   <form id="ansForm" class="row" style="align-items:stretch">
-    <input type="text" id="ans" inputmode="decimal" autocomplete="off" placeholder="Mean A − mean B" aria-label="Mean A minus mean B">
+    <input type="text" id="ans" inputmode="decimal" autocomplete="off" placeholder="Your t" aria-label="Your t value">
     <button class="primary" style="flex:0 0 auto">Submit</button>
   </form>
   <div class="msg hidden" id="phMsg"></div>
-  <button id="fixBtn" class="primary hidden"></button>
-  <button id="deal">Deal a new set</button>
+  <details id="helper">
+    <summary>Check my working</summary>
+    <label class="fld">Cards you drew, separated by spaces<input type="text" id="cards" inputmode="decimal" autocomplete="off"></label>
+    <dl class="work hidden" id="work"></dl>
+    <p class="small" id="workNote"></p>
+    <button id="useT" class="hidden" style="width:100%;margin-bottom:12px"></button>
+  </details>
 </main>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -136,26 +157,54 @@ label.chk input{width:20px;height:20px;accent-color:var(--blue)}
 const $ = id => document.getElementById(id);
 const P = new URLSearchParams(location.search);
 const store = { get(k){ try{ return localStorage.getItem(k) }catch(e){ return null } }, set(k,v){ try{ localStorage.setItem(k,v) }catch(e){} } };
-const fmt = v => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(1);
-const fmtP = p => p < 0.001 ? '< .001' : p.toFixed(3).replace(/^0/, '');
-const die = () => 1 + Math.floor(Math.random() * 6);
+const sgn = v => v > 0 ? '+' : v < 0 ? '−' : '';
+const f2 = v => sgn(v) + Math.abs(v).toFixed(2);
+const fmtP = p => p < 0.001 ? '< .001' : '= ' + p.toFixed(3).replace(/^0/, '');
 const uid = () => Math.random().toString(36).slice(2, 10);
+const BW = 0.25; // bin width in t units
+
+// ---- statistics ----
+function lgamma(x){ const g = [676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+  x -= 1; let a = 0.99999999999980993; const t = x + 7.5; g.forEach((c, i) => a += c / (x + i + 1));
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a); }
+const tpdf = (x, v) => Math.exp(lgamma((v + 1) / 2) - lgamma(v / 2) - 0.5 * Math.log(v * Math.PI) - (v + 1) / 2 * Math.log(1 + x * x / v));
+function tUpper(x, v){ const a = Math.abs(x), N = 2000, h = a / N; let s = tpdf(0, v) + tpdf(a, v);
+  for (let i = 1; i < N; i++) s += (i % 2 ? 4 : 2) * tpdf(i * h, v); return Math.max(0, 0.5 - s * h / 3); }
+function describe(xs){ const n = xs.length, m = xs.reduce((a, b) => a + b, 0) / n;
+  const sd = n > 1 ? Math.sqrt(xs.reduce((a, b) => a + (b - m) ** 2, 0) / (n - 1)) : 0; return { n, m, sd }; }
+function parseDeck(s){ const out = [];
+  for (const tok of String(s).toLowerCase().split(/[\s,;]+/).filter(Boolean)){
+    const mm = tok.match(/^(-?\d+(?:\.\d+)?)(?:-(-?\d+(?:\.\d+)?))?(?:x(\d+))?$/); if (!mm) return null;
+    const a = +mm[1], b = mm[2] !== undefined ? +mm[2] : a, k = mm[3] ? +mm[3] : 1;
+    if (b < a || b - a > 200 || k > 50) return null;
+    for (let r = 0; r < k; r++) for (let v = a; v <= b; v++) out.push(v); }
+  return out.length >= 2 && out.length <= 2000 ? out : null; }
 
 // ---- state ----
 let room = (P.get('room') || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12);
 const isPhoneLink = !!room && P.get('view') !== 'present';
 if (!room) { room = store.get('nd-room') || uid().slice(0, 6); store.set('nd-room', room); }
 const topic = 'demystr-null-' + room;
-const S = { round: 1, rounds: { 1: [], 2: [] }, seen: new Set(), obs: null, tails: 'two', sim: false, ghost: false, ghosts: [], online: false, cleared: { 1: +(store.get('nd-cleared1-' + room) || 0), 2: +(store.get('nd-cleared2-' + room) || 0) } };
-const shiftFor = r => r === 2 ? 1 : 0;
+const S = { round: 1, rounds: { 1: [], 2: [] }, seen: new Set(), obs: null, tails: 'two', tcurve: false, sim: false, ghost: false, ghosts: [], online: false,
+  cfg: { deck1: '1-10x4', deck2: '3-10x4', n: 5, repl: false, mu0: 5.5 },
+  cleared: { 1: +(store.get('nd-cleared1-' + room) || 0), 2: +(store.get('nd-cleared2-' + room) || 0) } };
+const df = () => S.cfg.n - 1;
+const deckFor = r => parseDeck(r === 2 ? S.cfg.deck2 : S.cfg.deck1) || parseDeck('1-10x4');
 
-// one person's draw: 5 values for A (plus shift), 5 for B; difference on a 0.2 grid
-function deal(shift){ const a = Array.from({length:5}, () => die() + shift), b = Array.from({length:5}, die); const sa = a.reduce((x,y)=>x+y), sb = b.reduce((x,y)=>x+y); return { a, b, ma: sa/5, mb: sb/5, d: (sa - sb) / 5 }; }
-const valid = v => Number.isFinite(v) && Math.abs(v) <= 7 && Math.abs(v*5 - Math.round(v*5)) < 1e-6;
-
+// one draw of n cards, its t against the round-1 deck mean
+function drawT(deck){ const n = Math.min(S.cfg.n, S.cfg.repl ? 999 : deck.length), xs = [];
+  if (S.cfg.repl) for (let i = 0; i < n; i++) xs.push(deck[Math.floor(Math.random() * deck.length)]);
+  else { const d = deck.slice(); for (let i = 0; i < n; i++){ const j = i + Math.floor(Math.random() * (d.length - i)); [d[i], d[j]] = [d[j], d[i]]; xs.push(d[i]); } }
+  const s = describe(xs); return s.sd > 0 ? (s.m - S.cfg.mu0) / (s.sd / Math.sqrt(s.n)) : null; }
+const valid = v => Number.isFinite(v) && Math.abs(v) <= 100;
 const simCache = {};
-function simCounts(shift){ if (simCache[shift]) return simCache[shift]; const c = {}; for (let i = 0; i < 10000; i++){ const k = Math.round(deal(shift).d * 5); c[k] = (c[k]||0) + 1; } return simCache[shift] = c; }
-function makeGhosts(){ const n = Math.max(0, Math.min(200, +$('ghostN').value || 0)); S.ghosts = Array.from({length:n}, () => deal(shiftFor(S.round)).d); }
+function sim(r){ const key = [r, S.cfg.deck1, S.cfg.deck2, S.cfg.n, S.cfg.repl].join('|'); if (simCache[key]) return simCache[key];
+  const deck = deckFor(r), c = {}; let ok = 0, all = [];
+  for (let i = 0; i < 10000; i++){ const t = drawT(deck); if (t === null) continue; ok++; all.push(t); const k = Math.round(t / BW); c[k] = (c[k] || 0) + 1; }
+  return simCache[key] = { c, ok, all }; }
+function makeGhosts(){ const n = Math.max(0, Math.min(200, +$('ghostN').value || 0)), d = deckFor(S.round); S.ghosts = [];
+  while (S.ghosts.length < n){ const t = drawT(d); if (t !== null) S.ghosts.push(t); } }
 
 // ---- transport: ntfy.sh when reachable, otherwise this device only ----
 const bc = 'BroadcastChannel' in window ? new BroadcastChannel(topic) : null;
@@ -164,22 +213,25 @@ function incoming(m){
   if (m.at && m.at < S.cleared[m.r]) return;
   S.seen.add(m.id); S.rounds[m.r].push({ v: m.v, id: m.id }); draw(m.id);
 }
-if (bc) bc.onmessage = e => { const m = e.data; if (m.t === 'sub') incoming(m); if (m.t === 'ctl') { S.round = m.round; renderRound(); } };
+function applyCtl(c){ if (!c) return; if (c.round === 1 || c.round === 2) S.round = c.round;
+  if (c.n >= 2 && c.n <= 30) S.cfg.n = c.n; if (Number.isFinite(c.mu0)) S.cfg.mu0 = c.mu0; S.cfg.repl = !!c.repl; renderPhone(); }
+if (bc) bc.onmessage = e => { const m = e.data; if (m.t === 'sub') incoming(m); if (m.t === 'ctl' && isPhoneView()) applyCtl(m); };
 async function send(m){
   m.at = Date.now();
-  if (S.online){ try { await fetch('https://ntfy.sh/' + topic, { method: 'POST', body: JSON.stringify(m) }); return true; } catch(e){ return false; } }
+  if (S.online){ try { const r = await fetch('https://ntfy.sh/' + topic, { method: 'POST', body: JSON.stringify(m) }); return r.ok; } catch(e){ return false; } }
   if (bc) bc.postMessage(m); incoming(m); return true;
 }
+function ctlMsg(){ return { t: 'ctl', round: S.round, n: S.cfg.n, mu0: S.cfg.mu0, repl: S.cfg.repl, at: Date.now() }; }
 async function sendCtl(){
-  const m = { t: 'ctl', round: S.round, at: Date.now() };
+  const m = ctlMsg(); store.set('nd-ctl-' + room, JSON.stringify(m));
   if (bc) bc.postMessage(m);
   if (S.online) { try { await fetch('https://ntfy.sh/' + topic + '-ctl', { method: 'POST', body: JSON.stringify(m) }); } catch(e){} }
 }
 async function fetchCtl(){
-  if (!S.online){ const r = +store.get('nd-round-' + room); if (r === 1 || r === 2) S.round = r; return; }
+  if (!S.online){ try { applyCtl(JSON.parse(store.get('nd-ctl-' + room))); } catch(e){} return; }
   try { const t = await (await fetch('https://ntfy.sh/' + topic + '-ctl/json?poll=1&since=all')).text();
     const msgs = t.trim().split('\n').filter(Boolean).map(l => JSON.parse(l)).filter(x => x.event === 'message');
-    if (msgs.length){ const c = JSON.parse(msgs[msgs.length-1].message); if (c.round === 1 || c.round === 2) S.round = c.round; } } catch(e){}
+    if (msgs.length) applyCtl(JSON.parse(msgs[msgs.length - 1].message)); } catch(e){}
 }
 function subscribe(){
   const es = new EventSource('https://ntfy.sh/' + topic + '/sse?since=all');
@@ -201,108 +253,146 @@ function draw(newId){
   if (newId) lastNew = newId;
   const W = fig.clientWidth, H = fig.clientHeight; if (!W || !H) return;
   const live = S.rounds[S.round], prev = S.round === 2 ? S.rounds[1] : [], ghosts = S.ghost ? S.ghosts : [];
-  const all = live.map(d => d.v).concat(ghosts, prev.map(d => d.v), S.obs === null ? [] : [S.obs, S.tails === 'two' ? -S.obs : S.obs]);
-  let lo = Math.min(S.round === 2 ? -2 : -3, ...all), hi = Math.max(S.round === 2 ? 4 : 3, ...all);
-  lo = Math.floor(lo); hi = Math.ceil(hi);
-  const m = { l: 16, r: 16, t: 34, b: 48 }, k0 = Math.round(lo*5), k1 = Math.round(hi*5), nb = k1 - k0 + 1, bw = (W - m.l - m.r) / nb;
-  const X = v => m.l + (v*5 - k0 + 0.5) * bw, base = H - m.b;
+  const vis = live.map(d => d.v).concat(ghosts, prev.map(d => d.v), S.obs === null ? [] : [S.obs, S.tails === 'two' ? -S.obs : S.obs]);
+  const lo = Math.max(-8, Math.floor(Math.min(-4, ...vis))), hi = Math.min(8, Math.ceil(Math.max(S.round === 2 ? 6 : 4, ...vis)));
+  const clampK = v => Math.max(Math.round(lo / BW), Math.min(Math.round(hi / BW), Math.round(v / BW)));
+  const m = { l: 16, r: 16, t: 34, b: 48 }, k0 = Math.round(lo / BW), k1 = Math.round(hi / BW), nb = k1 - k0 + 1, bw = (W - m.l - m.r) / nb;
+  const X = v => m.l + (v / BW - k0 + 0.5) * bw, base = H - m.b;
   const stack = {}, items = [];
-  ghosts.forEach(v => { const k = Math.round(v*5); stack[k] = (stack[k]||0) + 1; items.push({ k, i: stack[k] - 1, v, g: true }); });
-  live.forEach(d => { const k = Math.round(d.v*5); stack[k] = (stack[k]||0) + 1; items.push({ k, i: stack[k] - 1, v: d.v, id: d.id }); });
-  const prevC = {}; prev.forEach(d => { const k = Math.round(d.v*5); prevC[k] = (prevC[k]||0) + 1; });
-  const N = items.length, sc = simCounts(shiftFor(S.round)), simScale = (N || 30) / 10000;
+  ghosts.forEach(v => { const k = clampK(v); stack[k] = (stack[k] || 0) + 1; items.push({ k, i: stack[k] - 1, v, g: true }); });
+  live.forEach(d => { const k = clampK(d.v); stack[k] = (stack[k] || 0) + 1; items.push({ k, i: stack[k] - 1, v: d.v, id: d.id }); });
+  const prevC = {}; prev.forEach(d => { const k = clampK(d.v); prevC[k] = (prevC[k] || 0) + 1; });
+  const N = items.length, scale = N || 30, sm = sim(S.round), simScale = scale / sm.ok;
   let maxH = 8; for (const k in stack) maxH = Math.max(maxH, stack[k]); for (const k in prevC) maxH = Math.max(maxH, prevC[k]);
-  if (S.sim) for (const k in sc) maxH = Math.max(maxH, sc[k] * simScale);
+  if (S.sim) for (const k in sm.c) maxH = Math.max(maxH, sm.c[k] * simScale);
+  if (S.tcurve) maxH = Math.max(maxH, scale * BW * tpdf(0, df()));
   const r = Math.max(1.5, Math.min(bw * 0.46, (base - m.t) / (2 * maxH)));
   let h = '';
-  if (S.sim) for (let k = k0; k <= k1; k++){ const c = (sc[k]||0) * simScale; if (!c) continue; const hh = c * 2 * r, x = m.l + (k - k0) * bw;
-    h += `<rect x="${x + bw*0.04}" y="${base - hh}" width="${bw*0.92}" height="${hh}" fill="var(--tint)" stroke="${extreme(k/5) ? 'var(--yellow)' : 'var(--blue)'}" stroke-opacity=".5"/>`; }
-  if (prev.length){ let d = ''; for (let k = k0; k <= k1; k++){ const hh = (prevC[k]||0) * 2 * r, x = m.l + (k - k0) * bw; d += `${d ? 'L' : 'M'}${x},${base - hh}L${x + bw},${base - hh}`; }
+  if (S.sim) for (let k = k0; k <= k1; k++){ const c = (sm.c[k] || 0) * simScale; if (!c) continue; const hh = c * 2 * r, x = m.l + (k - k0) * bw;
+    h += `<rect x="${x + bw * 0.04}" y="${base - hh}" width="${bw * 0.92}" height="${hh}" fill="var(--tint)" stroke="${extreme(k * BW) ? 'var(--yellow)' : 'var(--blue)'}" stroke-opacity=".5"/>`; }
+  if (prev.length){ let d = ''; for (let k = k0; k <= k1; k++){ const hh = (prevC[k] || 0) * 2 * r, x = m.l + (k - k0) * bw; d += `${d ? 'L' : 'M'}${x},${base - hh}L${x + bw},${base - hh}`; }
     h += `<path d="${d}" fill="none" stroke="var(--soft)" stroke-width="1.5" stroke-dasharray="4 3"/>`; }
   items.forEach(it => { const ex = extreme(it.v), cx = m.l + (it.k - k0 + 0.5) * bw, cy = base - r - it.i * 2 * r;
     const fill = it.g ? (ex ? 'var(--ytint)' : 'var(--ghost)') : (ex ? 'var(--yellow)' : 'var(--blue)');
     h += `<circle${it.id && it.id === lastNew ? ' class="new"' : ''} cx="${cx}" cy="${cy}" r="${r * 0.9}" fill="${fill}"${ex && !it.g ? ' stroke="var(--ink)" stroke-width="1"' : ''}/>`; });
+  if (S.tcurve){ let d = ''; for (let px = 0; px <= W - m.l - m.r; px += 3){ const v = (px / bw + k0 - 0.5) * BW, y = base - scale * BW * tpdf(v, df()) * 2 * r; d += `${d ? 'L' : 'M'}${m.l + px},${y.toFixed(1)}`; }
+    h += `<path d="${d}" fill="none" stroke="var(--ink)" stroke-width="2.5"/>`; }
   h += `<line x1="${m.l}" x2="${W - m.r}" y1="${base}" y2="${base}" stroke="var(--ink)"/>`;
-  const step = bw * 5 < 34 ? 2 : 1;
-  for (let v = lo; v <= hi; v++){ if (v % step) continue; h += `<line x1="${X(v)}" x2="${X(v)}" y1="${base}" y2="${base + 6}" stroke="var(--ink)"/><text x="${X(v)}" y="${base + 22}" text-anchor="middle" font-size="13" fill="var(--soft)">${fmt(v).replace('+0.0','0').replace(/\.0$/, '')}</text>`; }
-  h += `<text x="${W/2}" y="${H - 6}" text-anchor="middle" font-size="14" fill="var(--ink)">Mean A − mean B</text>`;
+  const step = bw / BW < 30 ? 2 : 1;
+  for (let v = lo; v <= hi; v++){ if (v % step) continue; h += `<line x1="${X(v)}" x2="${X(v)}" y1="${base}" y2="${base + 6}" stroke="var(--ink)"/><text x="${X(v)}" y="${base + 22}" text-anchor="middle" font-size="13" fill="var(--soft)">${sgn(v) + Math.abs(v)}</text>`; }
+  h += `<text x="${W / 2}" y="${H - 6}" text-anchor="middle" font-size="14" fill="var(--ink)">t</text>`;
   if (S.obs !== null){ const lines = S.tails === 'two' && S.obs !== 0 ? [S.obs, -S.obs] : [S.obs];
     lines.forEach((v, i) => { const x = X(v);
       h += `<line x1="${x}" x2="${x}" y1="${m.t - 6}" y2="${base}" stroke="var(--ink)" stroke-width="2"${i ? ' stroke-dasharray="6 4"' : ''}/>`;
       const anchor = x > W - 120 ? 'end' : x < 120 ? 'start' : 'middle';
-      h += `<text x="${x}" y="${m.t - 12}" text-anchor="${anchor}" font-size="14" font-weight="600" fill="var(--ink)">${i ? 'Mirror ' : 'Observed '}${fmt(v)}</text>`; }); }
-  if (!N && !prev.length) h += `<text x="${W/2}" y="${(m.t + base)/2}" text-anchor="middle" font-size="16" fill="var(--soft)">Waiting for the first difference</text>`;
+      h += `<text x="${x}" y="${m.t - 12}" text-anchor="${anchor}" font-size="14" font-weight="600" fill="var(--ink)">${i ? 'Mirror' : 'Published'} t = ${f2(v)}</text>`; }); }
+  if (!N && !prev.length) h += `<text x="${W / 2}" y="${(m.t + base) / 2}" text-anchor="middle" font-size="16" fill="var(--soft)">Waiting for the first t value</text>`;
   svg.innerHTML = h;
-  stats();
+  legend(); stats();
+}
+function legend(){
+  const L = [['var(--blue)', 'Room']];
+  if (S.round === 2) L.push(['transparent;border:1.5px dashed var(--soft);border-radius:2px', 'Round 1 (outline)']);
+  if (S.ghost) L.push(['var(--ghost)', 'Ghost dots']);
+  if (S.sim) L.push(['var(--tint);border:1px solid var(--blue);border-radius:2px', '10,000 simulated draws']);
+  if (S.tcurve) L.push(['var(--ink);height:3px;border-radius:0;vertical-align:3px', `t distribution, df = ${df()}`]);
+  if (S.obs !== null) L.push(['var(--yellow)', 'At least as extreme']);
+  $('legend').innerHTML = L.map(([c, t]) => `<span><i style="background:${c}"></i>${t}</span>`).join('');
 }
 function stats(){
   const live = S.rounds[S.round], n = live.length;
-  let out = `<span><b>${n}</b>dots from the room</span>`;
+  let out = `<span><b>${n}</b>t values from the room</span>`;
   if (S.obs !== null){
     const k = live.filter(d => extreme(d.v)).length;
-    out += `<span><b>${k} of ${n}</b>at least as extreme as ${fmt(S.obs)}${n ? `, p = ${fmtP(k/n)}` : ''}</span>`;
-    if (S.sim){ const sc = simCounts(shiftFor(S.round)); let c = 0; for (const kk in sc) if (extreme(kk/5)) c += sc[kk];
-      out += `<span><b>p = ${fmtP(c/10000)}</b>in 10,000 simulated</span>`; }
+    out += `<span><b>${k} of ${n}</b>at least as extreme${n ? `, p ${fmtP(k / n)}` : ''}</span>`;
+    if (S.sim){ const sm = sim(S.round), c = sm.all.filter(extreme).length; out += `<span><b>p ${fmtP(c / sm.ok)}</b>in 10,000 simulated</span>`; }
+    if (S.tcurve){ const one = tUpper(S.obs, df()), p = S.tails === 'two' ? 2 * one : one; out += `<span><b>p ${fmtP(p)}</b>from t(${df()})</span>`; }
   }
   $('stats').innerHTML = out;
 }
 const ro = new ResizeObserver(() => draw()); ro.observe(fig);
 
-function renderRound(){
-  $('r1').setAttribute('aria-pressed', S.round === 1); $('r2').setAttribute('aria-pressed', S.round === 2);
-  $('roundNote').textContent = S.round === 1 ? 'Both groups come from the same die. The null is true.' : 'Each value in group A has 1 added. Phones are not told. Round 1 is shown as a dashed outline.';
-  $('phRound').textContent = 'Round ' + S.round;
+function readCfg(){
+  const d1 = parseDeck($('deck1').value), d2 = parseDeck($('deck2').value);
+  S.cfg.n = Math.max(2, Math.min(30, Math.round(+$('nIn').value) || 5)); S.cfg.repl = $('repl').value === '1';
+  if (d1) S.cfg.deck1 = $('deck1').value; if (d2) S.cfg.deck2 = $('deck2').value;
+  const a = deckFor(1), b = deckFor(2), sa = describe(a), sb = describe(b); S.cfg.mu0 = sa.m;
+  $('deckNote').textContent = (d1 && d2 ? '' : 'Could not read a deck: use ranges like 1-10x4. ') +
+    `Round 1: ${a.length} cards, mean ${sa.m.toFixed(2)}. Round 2: ${b.length} cards, mean ${sb.m.toFixed(2)}. Everyone tests against ${+sa.m.toFixed(2)}.` +
+    (!S.cfg.repl && S.cfg.n > Math.min(a.length, b.length) ? ' n is larger than a deck.' : '');
+  $('roundNote').textContent = S.round === 1 ? `The deck mean is ${+sa.m.toFixed(2)}, so the null is true.` : `The true mean is now ${+sb.m.toFixed(2)}, still tested against ${+sa.m.toFixed(2)}. Round 1 is the dashed outline.`;
   if (S.ghost) makeGhosts();
-  draw();
 }
-function setRound(r){ S.round = r; store.set('nd-round-' + room, r); renderRound(); sendCtl(); }
+function cfgChanged(){ readCfg(); sendCtl(); draw(); }
+['deck1', 'deck2', 'nIn', 'repl'].forEach(id => $(id).onchange = cfgChanged);
+function setRound(r){ S.round = r; $('r1').setAttribute('aria-pressed', r === 1); $('r2').setAttribute('aria-pressed', r === 2); cfgChanged(); }
 $('r1').onclick = () => setRound(1); $('r2').onclick = () => setRound(2);
 $('obsBtn').onclick = () => { const v = parseFloat($('obs').value); S.obs = Number.isFinite(v) ? v : null; $('obsBtn').textContent = 'Update'; draw(); };
 $('tails').onchange = e => { S.tails = e.target.value; draw(); };
+$('tChk').onchange = e => { S.tcurve = e.target.checked; draw(); };
 $('simChk').onchange = e => { S.sim = e.target.checked; draw(); };
 $('ghostChk').onchange = e => { S.ghost = e.target.checked; if (S.ghost) makeGhosts(); draw(); };
 $('ghostN').onchange = () => { if (S.ghost){ makeGhosts(); draw(); } };
-$('addTest').onclick = () => { for (let i = 0; i < 10; i++) send({ t: 'sub', v: deal(shiftFor(S.round)).d, r: S.round, id: uid() }); };
+$('addTest').onclick = () => { const d = deckFor(S.round); for (let i = 0; i < 10; i++){ const t = drawT(d); if (t !== null) send({ t: 'sub', v: +t.toFixed(2), r: S.round, id: uid() }); } };
 $('clear').onclick = () => { S.rounds[S.round] = []; S.cleared[S.round] = Date.now(); store.set('nd-cleared' + S.round + '-' + room, S.cleared[S.round]); draw(); };
 
 // ---- phone ----
-let cur = null;
-async function newDeal(){
-  await fetchCtl();
-  cur = deal(shiftFor(S.round));
+const isPhoneView = () => !$('phoneView').classList.contains('hidden');
+function renderPhone(){
+  const n = S.cfg.n, mu = +S.cfg.mu0.toFixed(2);
   $('phRound').textContent = 'Round ' + S.round;
-  $('valsA').innerHTML = cur.a.map(v => `<span>${v}</span>`).join('');
-  $('valsB').innerHTML = cur.b.map(v => `<span>${v}</span>`).join('');
-  $('ans').value = ''; $('ans').disabled = false; $('phMsg').classList.add('hidden'); $('fixBtn').classList.add('hidden');
+  $('phSteps').innerHTML = `<li>Shuffle and draw ${n} cards${S.cfg.repl ? ', putting each one back before the next draw' : ''}.</li>
+    <li>Work out the mean and the standard deviation of your ${n} cards.</li><li>Work out t and submit it. Return the cards and repeat.</li>`;
+  $('phFormula').textContent = `t = (mean − ${mu}) / (SD / √${n})`;
+  $('cards').placeholder = 'e.g. ' + Array.from({ length: n }, (_, i) => (i * 3) % 10 + 1).join(' ');
+  checkWork();
 }
 function msg(t, warn){ const e = $('phMsg'); e.textContent = t; e.className = 'msg' + (warn ? ' warn' : ''); }
+let busy = false;
 async function submit(v){
-  const ok = await send({ t: 'sub', v, r: S.round, id: uid() });
-  $('fixBtn').classList.add('hidden'); $('ans').disabled = true;
-  msg(ok ? `Submitted ${fmt(v)}. It is on the presenter's screen.` : 'Could not send. Check your connection and try again.', !ok);
-  if (!ok) $('ans').disabled = false;
+  if (busy) return; busy = true;
+  const ok = await send({ t: 'sub', v: +v.toFixed(2), r: S.round, id: uid() }); busy = false;
+  if (ok){ msg(`Submitted t = ${f2(v)}. Draw again and submit another.`); $('ans').value = ''; $('cards').value = ''; checkWork(); }
+  else msg('Could not send. Check your connection and try again.', true);
 }
-$('ansForm').onsubmit = e => { e.preventDefault(); if (!cur || $('ans').disabled) return;
-  const g = parseFloat($('ans').value.replace(/[−–]/g, '-').replace(',', '.').replace(/\s/g, ''));
-  if (Number.isFinite(g) && Math.abs(g - cur.d) < 0.051) return submit(cur.d);
-  msg(`Not quite. Mean A = ${cur.ma.toFixed(1)}, mean B = ${cur.mb.toFixed(1)}, so mean A − mean B = ${fmt(cur.d)}.`, true);
-  const f = $('fixBtn'); f.textContent = 'Submit ' + fmt(cur.d); f.classList.remove('hidden'); };
-$('fixBtn').onclick = () => submit(cur.d);
-$('deal').onclick = newDeal;
+const num = s => parseFloat(String(s).replace(/[−–]/g, '-').replace(',', '.').replace(/\s/g, ''));
+$('ansForm').onsubmit = async e => { e.preventDefault(); await fetchCtl();
+  const v = num($('ans').value);
+  if (!valid(v)) return msg('Enter your t as a number, for example 1.23 or -0.85.', true);
+  submit(v); };
+let workT = null;
+function checkWork(){
+  const xs = $('cards').value.split(/[\s,;]+/).filter(Boolean).map(num), n = S.cfg.n;
+  $('work').classList.add('hidden'); $('useT').classList.add('hidden'); workT = null;
+  if (!xs.length){ $('workNote').textContent = `Enter your ${n} cards to see each step.`; return; }
+  if (xs.some(x => !Number.isFinite(x))){ $('workNote').textContent = 'Use numbers only.'; return; }
+  if (xs.length !== n){ $('workNote').textContent = `${xs.length} of ${n} cards entered.`; return; }
+  const s = describe(xs), se = s.sd / Math.sqrt(n);
+  if (s.sd === 0){ $('workNote').textContent = 'All cards are the same, so SD = 0 and t cannot be worked out. Draw again.'; return; }
+  workT = (s.m - S.cfg.mu0) / se;
+  const rows = [['Mean', s.m.toFixed(2)], ['SD', s.sd.toFixed(2)], [`SE = SD / √${n}`, se.toFixed(2)], [`Mean − ${+S.cfg.mu0.toFixed(2)}`, f2(s.m - S.cfg.mu0)], ['t', f2(workT)]];
+  $('work').innerHTML = rows.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join(''); $('work').classList.remove('hidden');
+  const typed = num($('ans').value);
+  $('workNote').textContent = Number.isFinite(typed) ? (Math.abs(typed - workT) < 0.06 ? 'This matches your t.' : `Your t was ${f2(typed)}. Check each step above.`) : '';
+  $('useT').textContent = `Submit t = ${f2(workT)}`; $('useT').classList.remove('hidden');
+}
+$('cards').oninput = checkWork; $('ans').oninput = () => { if ($('cards').value.trim()) checkWork(); };
+$('useT').onclick = () => { if (workT !== null) submit(workT); };
 
 // ---- views ----
+let phoneSynced = false;
 function show(v){ const ph = v === 'phone';
   $('presView').classList.toggle('hidden', ph); $('phoneView').classList.toggle('hidden', !ph);
   $('vPres').setAttribute('aria-pressed', !ph); $('vPhone').setAttribute('aria-pressed', ph);
-  $('title').textContent = ph ? 'Your two groups' : 'Null distribution: live';
-  if (ph && !cur) newDeal(); if (!ph) draw(); }
+  $('title').textContent = ph ? 'Your t values' : 'Null distribution of t';
+  if (ph){ renderPhone(); if (!S.online && !isPhoneLink && !phoneSynced){ phoneSynced = true; fetchCtl(); } } else draw(); }
 $('vPres').onclick = () => show('present'); $('vPhone').onclick = () => show('phone');
 
 function joinBox(){
   const url = location.origin + location.pathname + '?room=' + room;
   $('roomCode').textContent = room;
   if (S.online){
-    $('joinUrl').textContent = url; $('joinNote').textContent = 'Scan to join. Each phone deals its own values.';
+    $('joinUrl').textContent = url; $('joinNote').textContent = 'Scan to join. People can submit as many t values as they like.';
     try { new QRCode($('qr'), { text: url, width: 180, height: 180, colorDark: '#1C2530', colorLight: '#ffffff' }); } catch(e){ $('qr').classList.add('hidden'); }
   } else {
     $('qr').classList.add('hidden'); $('joinUrl').textContent = '';
@@ -314,10 +404,10 @@ function joinBox(){
   if (isPhoneLink){ $('vPres').parentElement.classList.add('hidden'); show('phone'); }
   S.online = await probe();
   $('mode').textContent = S.online ? 'Live · room ' + room : 'This device only';
-  if (isPhoneLink){ if (cur) newDeal(); else show('phone'); return; }
-  joinBox();
-  if (S.online){ subscribe(); sendCtl(); }
-  draw();
+  if (isPhoneLink){ await fetchCtl(); renderPhone(); return; }
+  readCfg(); joinBox();
+  if (S.online) subscribe();
+  if (S.online) sendCtl(); draw();
 })();
 }
 </script>
