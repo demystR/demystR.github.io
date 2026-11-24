@@ -1,0 +1,99 @@
+/* demystR theme for the series homepage --------------------------------
+   Same palette and type as the books: blue for structure, near-black for
+   text, yellow only as a highlight. */
+
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --dm-blue:        #467AAC;
+  --dm-blue-dark:   #2F5B85;
+  --dm-blue-tint:   #EDF3F9;
+  --dm-ink:         #1C2530;
+  --dm-ink-soft:    #4A5868;
+  --dm-yellow:      #F2C230;
+  --dm-yellow-tint: #FFF5D1;
+  --dm-rule:        #DDE3EA;
+}
+
+/* Type ------------------------------------------------------------------ */
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--dm-ink);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+h1, h2, h3, .navbar-title {
+  font-family: "Space Grotesk", "Inter", sans-serif;
+  font-weight: 700;
+  color: var(--dm-ink);
+  letter-spacing: -0.01em;
+}
+h2 { border-bottom: none; margin-top: 2.2rem; }
+
+a { color: var(--dm-blue); }
+a:hover, a:focus {
+  color: var(--dm-blue-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--dm-yellow);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
+
+/* Navbar: white, with the blue and yellow lines along the top ------------ */
+.navbar {
+  background-color: #fff !important;
+  border-top: 6px solid var(--dm-blue);
+  box-shadow: inset 0 3px 0 var(--dm-yellow), 0 1px 0 var(--dm-rule);
+}
+.navbar-logo { max-height: 40px; }
+.navbar .navbar-title, .navbar .nav-link, .navbar .bi { color: var(--dm-ink) !important; }
+.navbar .nav-link:hover, .navbar .nav-link.active { color: var(--dm-blue) !important; }
+.navbar .nav-link.active { text-decoration: underline; text-decoration-color: var(--dm-yellow); text-decoration-thickness: 3px; text-underline-offset: 6px; }
+.navbar-toggler-icon { filter: invert(1); }
+
+/* Homepage header ------------------------------------------------------- */
+.hero { display: flex; gap: 24px; align-items: center; margin: 1.5rem 0 1rem; }
+.hero p:has(> img.hero-logo), .hero .quarto-figure { margin: 0; flex: none; }
+.hero-logo { width: 120px; height: auto; }
+.hero-text h1 { font-size: 2.6rem; margin: 0; line-height: 1.1; }
+.hero-text p { margin: 6px 0 0; color: var(--dm-ink-soft); font-size: 1.1rem; }
+
+/* Equation, picture, code box ------------------------------------------- */
+.three { background: var(--dm-blue-tint); border: 1px solid var(--dm-blue); border-radius: 8px; padding: 1rem 1.25rem; margin: 1.5rem 0; }
+.three ul { margin: 0; padding-left: 1.2rem; }
+
+/* Book cards ------------------------------------------------------------ */
+.book-grid {
+  list-style: none; padding: 0; margin: 1rem 0 0;
+  display: grid; gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+.book-card { border: 1px solid var(--dm-rule); border-radius: 8px; overflow: hidden; background: #fff; }
+.book-card.live { border-color: var(--dm-blue); }
+.book-card.live:hover { background: var(--dm-yellow-tint); border-color: var(--dm-yellow); }
+.book-link { display: flex; flex-direction: column; height: 100%; color: inherit; text-decoration: none; }
+a.book-link:hover, a.book-link:focus { color: inherit; text-decoration: none; }
+a.book-link:hover h3, a.book-link:focus h3 { text-decoration: underline; text-decoration-color: var(--dm-yellow); text-decoration-thickness: 3px; text-underline-offset: 3px; }
+.book-image { display: block; width: 100%; height: auto; border-bottom: 1px solid var(--dm-rule); }
+.book-card.coming .book-image { filter: grayscale(1); opacity: 0.6; }
+.book-body { padding: 0.9rem 1.1rem 1.1rem; }
+.book-body h3 { font-size: 1.1rem; margin: 0.5rem 0 0.35rem; line-height: 1.3; }
+.book-card.live h3 { color: var(--dm-blue-dark); }
+.book-card.coming h3 { color: var(--dm-ink-soft); }
+.book-body p { margin: 0; color: var(--dm-ink-soft); font-size: 0.95rem; }
+
+.tag { display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 1px 8px; border-radius: 99px; }
+.tag-read { background: var(--dm-blue); color: #fff; }
+.tag-progress { background: var(--dm-blue-tint); color: var(--dm-blue-dark); border: 1px solid var(--dm-blue); }
+.tag-coming { background: var(--dm-yellow-tint); color: var(--dm-ink); border: 1px solid var(--dm-yellow); }
+
+/* Footer ---------------------------------------------------------------- */
+.nav-footer { background: var(--dm-ink); color: #E6EBF0; border-top: none; font-size: 0.92rem; }
+.nav-footer a { color: #fff; }
+.nav-footer a:hover { color: var(--dm-yellow); }
+
+@media (max-width: 560px) {
+  .hero { flex-direction: column; align-items: flex-start; }
+  .hero-logo { width: 90px; }
+  .hero-text h1 { font-size: 2.1rem; }
+}

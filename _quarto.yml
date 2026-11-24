@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - null-demo/
+
+website:
+  title: "demystR"
+  site-url: https://demystr.github.io
+  repo-url: https://github.com/demystR/demystR.github.io
+  description: "demystR: free open books that build statistics and decision models from equations, code and pictures in R."
+  image: images/logo.svg
+  favicon: images/logo.svg
+  open-graph: true
+  navbar:
+    logo: images/logo.svg
+    logo-alt: "demystR logo"
+    left:
+      - text: "Books"
+        href: index.qmd
+      - about.qmd
+    right:
+      - icon: github
+        href: https://github.com/demystR
+        aria-label: demystR on GitHub
+  page-footer:
+    left: |
+      Written by Sean Westwood. Source on [GitHub](https://github.com/demystR).
+    right: |
+      Text, figures and data: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Code: MIT.
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false

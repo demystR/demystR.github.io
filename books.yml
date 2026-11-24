@@ -1,0 +1,41 @@
+# The book list, in series order. Each book is one entry.
+# status: "read" (finished, live), "progress" (live, still being written),
+#         "coming" (not live yet: leave out `path`).
+- title: "Demystifying Statistics: From the Mean to the General Linear Model"
+  description: "Functions, equations and pictures, building from the mean and variance through t-tests, ANOVA and correlation to the general linear model. The entry point to the series."
+  path: https://demystr.github.io/stats/
+  image: images/stats.svg
+  status: progress
+  order: 1
+
+- title: "Demystifying Null Hypothesis Testing"
+  description: "Sampling and null distributions, p-values, error rates and power, all built by simulation."
+  path: https://demystr.github.io/nhst/
+  image: images/nhst.svg
+  status: progress
+  order: 2
+
+- title: "Demystifying Non-Parametric Tests: Ranks, Permutations and the Bootstrap"
+  description: "Rank tests taught as permutation tests on ranks, plus permutation tests on raw data and the bootstrap."
+  image: images/nonparametric.svg
+  status: coming
+  order: 3
+
+- title: "Demystifying Generalised and Mixed Models"
+  description: "Logistic and Poisson regression fitted by hand with maximum likelihood, multiple predictors, assumptions and mixed models."
+  image: images/glmm.svg
+  status: coming
+  order: 4
+
+- title: "Demystifying Drift Diffusion Models"
+  description: "Perceptual decisions with random-dot motion, then value-based decisions, then hierarchical models."
+  # path: https://demystr.github.io/ddm/ (when ready)
+  image: images/ddm.svg
+  status: coming
+  order: 5
+
+- title: "Reinforcement Learning and Choice Models"
+  description: "Reinforcement-learning and softmax choice models."
+  image: images/rl.svg
+  status: coming
+  order: 6

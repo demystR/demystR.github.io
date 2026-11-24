@@ -1,0 +1,13 @@
+---
+title: "About"
+---
+
+Each book builds its methods from scratch in R, so nothing is left as a button you press without knowing what it does. Every idea is shown three ways:
+
+::: {.three}
+- **the equation**: the idea written down formally;
+- **the picture**: a figure that shows what the equation does;
+- **the code**: the same thing in R, so you can use it on data.
+:::
+
+Each book stands alone, with its own ready-made functions, and points to the others where it builds on them. They use the same conventions throughout: tidyverse for data and figures, base-R model functions, and the same layout.

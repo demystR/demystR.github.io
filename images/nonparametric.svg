@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+<rect width="400" height="225" fill="#EDF3F9"/>
+<circle cx="62" cy="62" r="34" fill="#FFFFFF" stroke="#467AAC" stroke-width="4"/>
+<text x="62" y="76" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="40" fill="#1C2530">3</text>
+<line x1="120" y1="195" x2="375" y2="195" stroke="#1C2530" stroke-width="2"/>
+<rect x="125.0" y="138.0" width="21.9" height="57.0" fill="#FFFFFF" stroke="#467AAC" stroke-width="3"/>
+<rect x="156.9" y="62.0" width="21.9" height="133.0" fill="#467AAC" stroke="#467AAC" stroke-width="3"/>
+<rect x="188.8" y="176.0" width="21.9" height="19.0" fill="#FFFFFF" stroke="#467AAC" stroke-width="3"/>
+<rect x="220.6" y="100.0" width="21.9" height="95.0" fill="#467AAC" stroke="#467AAC" stroke-width="3"/>
+<rect x="252.5" y="43.0" width="21.9" height="152.0" fill="#467AAC" stroke="#467AAC" stroke-width="3"/>
+<rect x="284.4" y="157.0" width="21.9" height="38.0" fill="#FFFFFF" stroke="#467AAC" stroke-width="3"/>
+<rect x="316.2" y="81.0" width="21.9" height="114.0" fill="#467AAC" stroke="#467AAC" stroke-width="3"/>
+<rect x="348.1" y="119.0" width="21.9" height="76.0" fill="#FFFFFF" stroke="#467AAC" stroke-width="3"/>
+</svg>

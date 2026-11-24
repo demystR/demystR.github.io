@@ -1,0 +1,33 @@
+---
+pagetitle: "demystR"
+listing:
+  id: books
+  contents: books.yml
+  template: books.ejs
+  sort: order
+  sort-ui: false
+  filter-ui: false
+page-layout: full
+---
+
+::: {.hero}
+![](images/logo.svg){.hero-logo fig-alt="demystR logo"}
+
+::: {.hero-text}
+# demystR {.unnumbered .unlisted}
+
+Free, open books that take the black box out of statistics and decision models, one function at a time.
+:::
+:::
+
+
+## The books
+
+Listed in the order they build on each other. If you are new to statistics, start with the first.
+
+::: {#books}
+:::
+
+## Acknowledgements
+
+The style and structure of these books were inspired by the [PsyTeachR](https://psyteachr.github.io/) books from the University of Glasgow.

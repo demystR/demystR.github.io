@@ -1,0 +1,17 @@
+```{=html}
+<ol class="book-grid list">
+<% const labels = { read: "Read", progress: "In-Progress", coming: "Coming" }; %>
+<% for (const item of items) { %>
+  <li class="book-card <%= item.path ? 'live' : 'coming' %>" <%= metadataAttrs(item) %>>
+    <% if (item.path) { %><a class="book-link" href="<%- item.path %>"><% } else { %><div class="book-link"><% } %>
+      <img class="book-image" src="<%- item.image %>" alt="">
+      <div class="book-body">
+        <span class="tag tag-<%= item.status %>"><%= labels[item.status] %></span>
+        <h3><%= item.title %></h3>
+        <p><%= item.description %></p>
+      </div>
+    <% if (item.path) { %></a><% } else { %></div><% } %>
+  </li>
+<% } %>
+</ol>
+```
