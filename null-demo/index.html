@@ -95,15 +95,16 @@ summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weig
     <div class="box">
       <h2>Round</h2>
       <div class="seg" role="group" aria-label="Round">
-        <button id="r1" aria-pressed="true">1: null deck</button>
-        <button id="r2" aria-pressed="false">2: loaded deck</button>
+        <button id="r1" aria-pressed="true">Round 1</button>
+        <button id="r2" aria-pressed="false">Round 2</button>
       </div>
       <p class="small" id="roundNote"></p>
     </div>
     <div class="box">
       <h2>Cards</h2>
-      <label class="fld">Round 1 deck<input type="text" id="deck1" value="1-9x4 10x16"></label>
-      <label class="fld">Round 2 deck<input type="text" id="deck2" value="1-10x4"></label>
+      <label class="fld">Null hypothesis: the mean of this deck<input type="text" id="deck0" value="1-9x4 10x16"></label>
+      <label class="fld">Round 1 deck<input type="text" id="deck1" value="1-7x4"></label>
+      <label class="fld">Round 2 deck<input type="text" id="deck2" value="1-9x4 10x16"></label>
       <div class="row">
         <label class="fld">Cards per sample (n)<input type="number" id="nIn" min="2" max="30" value="7"></label>
         <label class="fld">Drawing<select id="repl"><option value="0">Without replacement</option><option value="1">With replacement</option></select></label>
@@ -184,7 +185,7 @@ const isPhoneLink = !!room && P.get('view') !== 'present';
 if (!room) { room = store.get('nd-room') || uid().slice(0, 6); store.set('nd-room', room); }
 const topic = 'demystr-null-' + room;
 const S = { round: 1, rounds: { 1: [], 2: [] }, seen: new Set(), obs: null, tails: 'two', tcurve: false, sim: false, ghost: false, ghosts: [], online: false,
-  cfg: { deck1: '1-9x4 10x16', deck2: '1-10x4', n: 7, repl: false, mu0: 340 / 52 },
+  cfg: { deck0: '1-9x4 10x16', deck1: '1-7x4', deck2: '1-9x4 10x16', n: 7, repl: false, mu0: 340 / 52 },
   cleared: { 1: +(store.get('nd-cleared1-' + room) || 0), 2: +(store.get('nd-cleared2-' + room) || 0) } };
 const df = () => S.cfg.n - 1;
 const deckFor = r => parseDeck(r === 2 ? S.cfg.deck2 : S.cfg.deck1) || parseDeck('1-9x4 10x16');
@@ -196,7 +197,7 @@ function drawT(deck){ const n = Math.min(S.cfg.n, S.cfg.repl ? 999 : deck.length
   const s = describe(xs); return s.sd > 0 ? (s.m - S.cfg.mu0) / (s.sd / Math.sqrt(s.n)) : null; }
 const valid = v => Number.isFinite(v) && Math.abs(v) <= 100;
 const simCache = {};
-function sim(r){ const key = [r, S.cfg.deck1, S.cfg.deck2, S.cfg.n, S.cfg.repl].join('|'); if (simCache[key]) return simCache[key];
+function sim(r){ const key = [r, S.cfg.deck0, S.cfg.deck1, S.cfg.deck2, S.cfg.n, S.cfg.repl].join('|'); if (simCache[key]) return simCache[key];
   const deck = deckFor(r), c = {}; let ok = 0, all = [];
   for (let i = 0; i < 10000; i++){ const t = drawT(deck); if (t === null) continue; ok++; all.push(t); const k = Math.round(t / BW); c[k] = (c[k] || 0) + 1; }
   return simCache[key] = { c, ok, all }; }
@@ -310,19 +311,21 @@ function stats(){
 const ro = new ResizeObserver(() => draw()); ro.observe(fig);
 
 function readCfg(){
-  const d1 = parseDeck($('deck1').value), d2 = parseDeck($('deck2').value);
+  const d0 = parseDeck($('deck0').value), d1 = parseDeck($('deck1').value), d2 = parseDeck($('deck2').value);
+  if (d0) S.cfg.deck0 = $('deck0').value;
   S.cfg.n = Math.max(2, Math.min(30, Math.round(+$('nIn').value) || 7)); S.cfg.repl = $('repl').value === '1';
   if (d1) S.cfg.deck1 = $('deck1').value; if (d2) S.cfg.deck2 = $('deck2').value;
-  const a = deckFor(1), b = deckFor(2), sa = describe(a), sb = describe(b); S.cfg.mu0 = sa.m;
-  $('deckNote').textContent = (d1 && d2 ? '' : 'Could not read a deck: use ranges like 1-9x4 10x16. ') +
-    `Round 1: ${a.length} cards, mean ${sa.m.toFixed(2)}. Round 2: ${b.length} cards, mean ${sb.m.toFixed(2)}. Everyone tests against ${+sa.m.toFixed(2)}.` +
+  const a = deckFor(1), b = deckFor(2), sa = describe(a), sb = describe(b), s0 = describe(parseDeck(S.cfg.deck0) || parseDeck('1-9x4 10x16')); S.cfg.mu0 = s0.m;
+  $('deckNote').textContent = (d0 && d1 && d2 ? '' : 'Could not read a deck: use ranges like 1-9x4 10x16. ') +
+    `Round 1: ${a.length} cards, mean ${sa.m.toFixed(2)}. Round 2: ${b.length} cards, mean ${sb.m.toFixed(2)}. Everyone tests against ${+s0.m.toFixed(2)}.` +
     (!S.cfg.repl && S.cfg.n > Math.min(a.length, b.length) ? ' n is larger than a deck.' : '');
-  $('roundNote').textContent = S.round === 1 ? `The deck mean is ${+sa.m.toFixed(2)}, so the null is true.` : `The true mean is now ${+sb.m.toFixed(2)}, still tested against ${+sa.m.toFixed(2)}. Round 1 is the dashed outline.`;
+  const cur = S.round === 1 ? sa : sb, isNull = Math.abs(cur.m - s0.m) < 1e-9;
+  $('roundNote').textContent = `This deck's mean is ${+cur.m.toFixed(2)}, tested against ${+s0.m.toFixed(2)}, so the null is ${isNull ? 'true' : 'false'}.` + (S.round === 2 ? ' Round 1 is the dashed outline.' : '');
   setCut();
   if (S.ghost) makeGhosts();
 }
 function cfgChanged(){ readCfg(); sendCtl(); draw(); }
-['deck1', 'deck2', 'nIn', 'repl'].forEach(id => $(id).onchange = cfgChanged);
+['deck0', 'deck1', 'deck2', 'nIn', 'repl'].forEach(id => $(id).onchange = cfgChanged);
 function setRound(r){ S.round = r; $('r1').setAttribute('aria-pressed', r === 1); $('r2').setAttribute('aria-pressed', r === 2); cfgChanged(); }
 $('r1').onclick = () => setRound(1); $('r2').onclick = () => setRound(2);
 function tCrit(v){ let lo = 0, hi = 50; for (let i = 0; i < 60; i++){ const mid = (lo + hi) / 2; if (tUpper(mid, v) > 0.025) lo = mid; else hi = mid; } return (lo + hi) / 2; }
