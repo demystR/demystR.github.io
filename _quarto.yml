@@ -29,7 +29,7 @@ website:
     right: |
       Text, figures and data: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Code: MIT.
     center: |
-      AI use: Claude Opus 5.5 (Anthropic) was used to build the interactive widgets, and to assist with some hidden figure code, site design, and build/deploy set-up.
+      AI use: Claude Opus 5.5 (Anthropic) was used to assist with site design, build/deploy set-up and more complex hidden figure code, and to build any interactive widgets.
 
 format:
   html:
