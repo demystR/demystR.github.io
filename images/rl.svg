@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
 <rect width="400" height="225" fill="#EDF3F9"/>
 <circle cx="62" cy="62" r="34" fill="#FFFFFF" stroke="#467AAC" stroke-width="4"/>
-<text x="62" y="76" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="40" fill="#1C2530">6</text>
+<text x="62" y="76" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="40" fill="#1C2530">1</text>
 <line x1="120" y1="195" x2="375" y2="195" stroke="#1C2530" stroke-width="2"/>
 <line x1="120" y1="67.0" x2="375" y2="67.0" stroke="#F2C230" stroke-width="4" stroke-dasharray="8 6"/>
 <path d="M120.0,179.0 L135.9,179.0 L135.9,145.4 L151.9,145.4 L151.9,121.9 L167.8,121.9 L167.8,105.4 L183.8,105.4 L183.8,93.9 L199.7,93.9 L199.7,85.8 L215.6,85.8 L215.6,80.2 L231.6,80.2 L231.6,76.2 L247.5,76.2 L247.5,73.5 L263.4,73.5 L263.4,71.5 L279.4,71.5 L279.4,70.2 L295.3,70.2 L295.3,69.2 L311.2,69.2 L311.2,68.6 L327.2,68.6 L327.2,68.1 L343.1,68.1 L343.1,67.8 L359.1,67.8 L359.1,67.5 L375.0,67.5" fill="none" stroke="#467AAC" stroke-width="5" stroke-linejoin="round"/>

@@ -18,19 +18,26 @@
   section: fundamentals
   order: 2
 
-- title: "Demystifying Non-Parametric Tests: Ranks, Permutations and the Bootstrap"
-  description: "Rank tests taught as permutation tests on ranks, plus permutation tests on raw data and the bootstrap."
-  image: images/nonparametric.svg
-  status: coming
-  section: fundamentals
-  order: 3
-
 - title: "Demystifying Generalised and Mixed Models"
   description: "Logistic and Poisson regression fitted by hand with maximum likelihood, multiple predictors, assumptions and mixed models."
   image: images/glmm.svg
   status: coming
   section: fundamentals
+  order: 3
+  
+- title: "Demystifying Non-Parametric Tests: Ranks, Permutations and the Bootstrap"
+  description: "Rank tests taught as permutation tests on ranks, plus permutation tests on raw data and the bootstrap."
+  image: images/nonparametric.svg
+  status: coming
+  section: fundamentals
   order: 4
+  
+- title: "Reinforcement Learning and Choice Models"
+  description: "Reinforcement-learning and softmax choice models."
+  image: images/rl.svg
+  status: coming
+  section: modelling
+  order: 1
 
 - title: "Demystifying Drift Diffusion Models"
   description: "Perceptual decisions with random-dot motion, then value-based decisions, then hierarchical models."
@@ -38,11 +45,6 @@
   image: images/ddm.svg
   status: coming
   section: modelling
-  order: 5
+  order: 2
 
-- title: "Reinforcement Learning and Choice Models"
-  description: "Reinforcement-learning and softmax choice models."
-  image: images/rl.svg
-  status: coming
-  section: modelling
-  order: 6
+

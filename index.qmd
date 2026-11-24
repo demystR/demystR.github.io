@@ -26,14 +26,9 @@ page-layout: full
 ::: {.hero-text}
 # demystR {.unnumbered .unlisted}
 
-Free, open books that open the black box of statistical functions and models one step at a time. 
+Open the black box of statistical functions and models one step at a time. 
 :::
 :::
-
-
-## The books
-
-Listed in the order they build on each other. If you are new to statistics, start with the first.
 
 ### Statistical fundamentals
 

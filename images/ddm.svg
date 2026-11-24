@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
 <rect width="400" height="225" fill="#EDF3F9"/>
 <circle cx="62" cy="62" r="34" fill="#FFFFFF" stroke="#467AAC" stroke-width="4"/>
-<text x="62" y="76" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="40" fill="#1C2530">5</text>
+<text x="62" y="76" text-anchor="middle" font-family="Space Grotesk, Arial, sans-serif" font-weight="700" font-size="40" fill="#1C2530">2</text>
 <line x1="120" y1="195" x2="375" y2="195" stroke="#1C2530" stroke-width="2"/>
 <line x1="120" y1="47.79999999999998" x2="375" y2="47.79999999999998" stroke="#1C2530" stroke-width="3"/>
 <line x1="120" y1="182.2" x2="375" y2="182.2" stroke="#1C2530" stroke-width="3"/>
