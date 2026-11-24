@@ -1,12 +1,22 @@
 ---
 pagetitle: "demystR"
 listing:
-  id: books
-  contents: books.yml
-  template: books.ejs
-  sort: order
-  sort-ui: false
-  filter-ui: false
+  - id: fundamentals
+    contents: books.yml
+    include:
+      section: fundamentals
+    template: books.ejs
+    sort: order
+    sort-ui: false
+    filter-ui: false
+  - id: modelling
+    contents: books.yml
+    include:
+      section: modelling
+    template: books.ejs
+    sort: order
+    sort-ui: false
+    filter-ui: false
 page-layout: full
 ---
 
@@ -16,7 +26,7 @@ page-layout: full
 ::: {.hero-text}
 # demystR {.unnumbered .unlisted}
 
-Free, open books that take the black box out of statistics and decision models, one function at a time.
+Free, open books that open the black box of statistical functions and models one step at a time. 
 :::
 :::
 
@@ -25,7 +35,14 @@ Free, open books that take the black box out of statistics and decision models, 
 
 Listed in the order they build on each other. If you are new to statistics, start with the first.
 
-::: {#books}
+### Statistical fundamentals
+
+::: {#fundamentals}
+:::
+
+### Computational modelling
+
+::: {#modelling}
 :::
 
 ## Acknowledgements
